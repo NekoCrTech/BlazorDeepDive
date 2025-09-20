@@ -7,6 +7,9 @@
 <h3>Servers</h3>
 <br>
 <br>
+
+@*------------ City Cards -------------*@
+
 <div class="container-fluid text-center">
     <div class="row w-50">
         @foreach (var city in cities)
@@ -23,8 +26,17 @@
     </div>
 </div>
 
-<br>
-<br>
+<br />
+
+@*------------ Search Bar -------------*@
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search Servers" @onchange="HandleServerFilterChange" />
+    <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
+</div>
+
+
+@*------------ Server List -------------*@
 
 <ul>
     @foreach (var server in servers)
@@ -62,6 +74,8 @@
 
     private string selectedCity = "Toronto";
 
+    private string serverFilter = String.Empty;
+
     private void DeleteServer(int serverId)
     {
         if (serverId > 0)
@@ -79,6 +93,21 @@
 
             this.servers = ServersRepository.GetServersByCity(this.selectedCity);
         }
+    }
+
+    private void HandleServerFilterChange(ChangeEventArgs args)
+    {
+        if (args.Value != null)
+        {
+            serverFilter = args.Value.ToString() ?? String.Empty;
+            // this.servers = ServersRepository.GetServersByCityAndFilter(this.selectedCity, filter);
+        }
+    }
+
+    private void HandleSearch()
+    {
+        this.servers = ServersRepository.SearchServers(serverFilter);
+        this.selectedCity = string.Empty;
     }
 
 }
