@@ -10,13 +10,18 @@
 
 @*------------ City Cards -------------*@
 
-<CityListComponent OnCitySelected="HandleCitySelection"></CityListComponent>
+<CityListComponent 
+    @ref="cityListComponent"
+    OnCitySelected="HandleCitySelection">
+</CityListComponent>
 
 <br />
 
 @*------------ Search Bar -------------*@
 
-<SearchComponent OnSearchPressed="HandleSearch"></SearchComponent>
+<SearchComponent 
+    @ref="searchComponent"
+    OnSearchPressed="HandleSearch"></SearchComponent>
 
 
 @*------------ Server List -------------*@
@@ -39,16 +44,21 @@
     private string selectedCity = "Toronto";
     private string searchFilter = "";
 
+    private CityListComponent? cityListComponent;
+    private SearchComponent? searchComponent;
+
 
     private void HandleCitySelection(string cityName)
     {
         selectedCity = cityName;
         this.searchFilter = string.Empty;
+        searchComponent?.ClearSearch();
     }
 
     private void HandleSearch(string filterSearch)
     {
-        this.selectedCity = string.Empty;
         this.searchFilter = filterSearch;
+
+        cityListComponent?.ClearSelection();
     }
 }

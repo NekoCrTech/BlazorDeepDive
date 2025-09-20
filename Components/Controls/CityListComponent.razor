@@ -13,7 +13,6 @@
         </div>
     </div>
 }
-@selectedCity
 
 
 @code {
@@ -29,5 +28,10 @@
         selectedCity = cityName;
 
         OnCitySelected.InvokeAsync(cityName);
+    }
+
+    public void ClearSelection()
+    {
+        this.selectedCity = string.Empty;
     }
 }
