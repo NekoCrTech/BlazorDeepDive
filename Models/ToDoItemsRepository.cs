@@ -30,7 +30,7 @@
         {
             var sortedItems = items.
                 OrderBy(item => item.IsCompleted)
-                .ThenBy(item => item.Id)
+                .ThenByDescending(item => item.Id)
                 .ToList();
             return sortedItems;
         }
