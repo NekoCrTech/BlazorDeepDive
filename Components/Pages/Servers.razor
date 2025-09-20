@@ -40,27 +40,12 @@
 
 @*------------ Server List -------------*@
 
-<ul>
-    <Virtualize Items="@this.servers" Context="server">
-        <li @key="server.Id">
-            @server.Name in @server.City is
-            <span style="color:@((server.IsOnline ? "green" : "red"))">
-                @(server.IsOnline ? "online" : "offline")
-            </span>
-            &nbsp;
-            <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
-            &nbsp;
-            <EditForm 
-                Model="server" 
-                FormName="@($"form-server-{server.Id}")"
-                OnValidSubmit="@(() => {DeleteServer(server.Id);})">
-                <button type="submit" class="btn btn-primary">Delete</button>
-            </EditForm>
+<ServerListComponent 
+    @rendermode="InteractiveServer" 
+    CityName=@this.selectedCity>
+</ServerListComponent>
 
-            
-        </li>
-    </Virtualize>
-</ul>
+
 
 
 <p>
@@ -69,7 +54,6 @@
 
 
 @code {
-    private List<Server> servers = ServersRepository.GetServersByCity("Toronto");
 
     private List<String> cities = CitiesRepository.GetCities();
 
@@ -82,16 +66,7 @@
         set
         {
             _serverFilter = value;
-            this.servers = ServersRepository.SearchServers(_serverFilter);
-        }
-    }
-
-    private void DeleteServer(int serverId)
-    {
-        if (serverId > 0)
-        {
-            ServersRepository.DeleteServer(serverId);
-            NavigationManager.NavigateTo("/Servers");
+            // this.servers = ServersRepository.SearchServers(_serverFilter);
         }
     }
 
@@ -101,13 +76,13 @@
         {
             this.selectedCity = cityName;
 
-            this.servers = ServersRepository.GetServersByCity(this.selectedCity);
+            // this.servers = ServersRepository.GetServersByCity(this.selectedCity);
         }
     }
 
     private void HandleSearch()
     {
-        this.servers = ServersRepository.SearchServers(serverFilter);
+        // this.servers = ServersRepository.SearchServers(serverFilter);
         this.selectedCity = string.Empty;
     }
 

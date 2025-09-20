@@ -16,7 +16,9 @@ namespace serverManagement2.Models
             new Server {  Id = 10, Name = "Server10", City = "Calgary" },
             new Server {  Id = 11, Name = "Server11", City = "Calgary" },
             new Server {  Id = 12, Name = "Server12", City = "Halifax" },
-            new Server {  Id = 13, Name = "Server13", City = "Halifax" },            
+            new Server {  Id = 13, Name = "Server13", City = "Halifax" },
+            new Server {  Id = 14, Name = "Server14", City = "Halifax" },
+            new Server {  Id = 15, Name = "Server15", City = "Halifax" },
         };
 
         public static void AddServer(Server server)
