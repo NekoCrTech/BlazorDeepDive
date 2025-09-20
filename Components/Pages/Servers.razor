@@ -16,19 +16,15 @@
 
 @*------------ Search Bar -------------*@
 
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Search Servers" 
-        @bind-value="serverFilter"
-        @bind-value:event="oninput" />
-    <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
-</div>
+<SearchComponent OnSearchPressed="HandleSearch"></SearchComponent>
 
 
 @*------------ Server List -------------*@
 
 <ServerListComponent 
     @rendermode="InteractiveServer" 
-    CityName="@this.selectedCity">
+    CityName="@this.selectedCity"
+    SearchFilter="@this.searchFilter">
 </ServerListComponent>
 
 
@@ -41,28 +37,18 @@
 
 @code {
     private string selectedCity = "Toronto";
+    private string searchFilter = "";
 
-    private string _serverFilter = "";
-    private string serverFilter
-    {
-        get => _serverFilter;
-        set
-        {
-            _serverFilter = value;
-            // this.servers = ServersRepository.SearchServers(_serverFilter);
-        }
-    }
-
-
-
-    private void HandleSearch()
-    {
-        // this.servers = ServersRepository.SearchServers(serverFilter);
-        // this.selectedCity = string.Empty;
-    }
 
     private void HandleCitySelection(string cityName)
     {
         selectedCity = cityName;
+        this.searchFilter = string.Empty;
+    }
+
+    private void HandleSearch(string filterSearch)
+    {
+        this.selectedCity = string.Empty;
+        this.searchFilter = filterSearch;
     }
 }
