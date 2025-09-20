@@ -1,5 +1,7 @@
 ﻿@page "/Servers"
 
+@rendermode InteractiveServer
+
 @inject NavigationManager NavigationManager
 
 <h3>Servers</h3>
@@ -13,7 +15,7 @@
                 <div class="card">
                     <img src="@($"/images/{city}.png")" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <button type="button" class="btn btn-primary">@city</button>
+                        <button type="button" class="btn btn-primary" @onclick=@(() => { selectCity(city); })>@city</button>
                     </div>
                 </div>
             </div>
@@ -25,7 +27,7 @@
 <br>
 
 
-<ServerComponent @rendermode="InteractiveServer"></ServerComponent>
+<ServerComponent></ServerComponent>
 
 
 <ul>
@@ -51,6 +53,7 @@
     }
 </ul>
 
+
 <p>
     <a href="/Servers/Add" class="btn btn-primary">Add Server</a>
 </p>
@@ -61,12 +64,24 @@
 
     private List<String> cities = CitiesRepository.GetCities();
 
+    private string selectedCity = "Toronto";
+
     private void DeleteServer(int serverId)
     {
         if (serverId > 0)
         {
             ServersRepository.DeleteServer(serverId);
             NavigationManager.NavigateTo("/Servers");
+        }
+    }
+
+    private void selectCity(string cityName)
+    {
+        if (!String.IsNullOrEmpty(cityName))
+        {
+            this.selectedCity = cityName;
+
+            this.servers = ServersRepository.GetServersByCity(this.selectedCity);
         }
     }
 
