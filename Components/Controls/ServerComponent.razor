@@ -9,6 +9,25 @@
             @(Server.IsOnline ? "online" : "offline")
         </span>
         &nbsp;
+        @if (Server.IsOnline)
+        {
+            @RndInt(300) <text> / 300 </text>
+            <button type="button"
+                class="btn btn-outline-danger"
+                @onclick="@(() => {Server.IsOnline = false; })">
+                Turn Off
+            </button>
+        }
+        else
+        {
+            <text>N / A </text>
+            <button type="button" 
+                class="btn btn-outline-success"
+                @onclick="@(() =>  {Server.IsOnline = true; })">
+                Turn On
+            </button>
+        }
+        &nbsp;
         <a href="/servers/@Server.Id" class="btn btn-link">Edit</a>
         &nbsp;
         <EditForm Model="Server"
@@ -32,5 +51,12 @@
             ServersRepository.DeleteServer(serverId);
             NavigationManager.NavigateTo("/Servers", true);
         }
+    }
+
+    private int RndInt(int max)
+    {
+        Random random = new Random();
+        int rndInt = random.Next(0, max+1);
+        return rndInt;
     }
 }
