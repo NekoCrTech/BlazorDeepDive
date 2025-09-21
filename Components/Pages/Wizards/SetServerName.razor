@@ -4,7 +4,7 @@
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
-@inject SessionStorage sessionStorage
+@inject ContainerStorage containerStorage
 
 <h3>Set Server Name</h3>
 <br />
@@ -49,7 +49,7 @@
         
     }
 
-    private async Task GoNext()
+    private void GoNext()
     {
         if(server is not null)
         {
@@ -59,7 +59,7 @@
             }
             else
             {
-                await sessionStorage.SetServerAsync(server);
+                containerStorage.SetServer(server);
                 NavigationManager.NavigateTo("/cityname");
             }
         }

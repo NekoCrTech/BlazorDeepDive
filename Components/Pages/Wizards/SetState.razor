@@ -4,7 +4,7 @@
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
-@inject SessionStorage sessionStorage
+@inject ContainerStorage containerStorage
 
 <h3>Set State</h3>
 <br />
@@ -39,20 +39,20 @@
         base.OnInitialized();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            this.server = await this.sessionStorage.GetServerAsync();
+            this.server = this.containerStorage.GetServer();
             StateHasChanged();
         }
     }
 
-    private async Task Save()
+    private void Save()
     {
         if (server is not null)
         {
-            await sessionStorage.SetServerAsync(null);
+            containerStorage.SetServer(null);
             ServersRepository.AddServer(server);
             NavigationManager.NavigateTo($"/Servers/back_from/{server.City}");
         }
