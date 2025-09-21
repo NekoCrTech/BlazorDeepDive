@@ -80,6 +80,9 @@ else
     [Parameter]
     public int? Id { get; set; }
 
+    [SupplyParameterFromQuery]
+    public string? City { get; set; }
+
     [SupplyParameterFromForm]
     private Server? server { get; set; }
 
@@ -94,6 +97,11 @@ else
         {
             // Add mode
             server ??= new Server() { IsOnline = false };
+        }
+
+        if ( server!= null && !string.IsNullOrEmpty(this.City))
+        {
+            server.City = this.City;
         }
     }
 
