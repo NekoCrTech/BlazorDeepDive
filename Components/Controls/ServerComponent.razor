@@ -2,8 +2,56 @@
 
 @if (Server!=null)
 {
+    <tr style="background-color: @GetBackgroundColor()">
+        <td>
+            @Server.Name
+        </td>
+        <td>
+            @Server.City
+        </td>
+        <td style="color:@((Server.IsOnline ? "green" : "red"))">
+            @(Server.IsOnline ? "online" : "offline")
+        </td>
+        <td>
+            @if (Server.IsOnline)
+            {
+                @RndInt(300)<text>/300</text>
+            }
+            else
+            {
+                <text>N/A</text>
+            }
+        </td>
+        <td>
+            @if (Server.IsOnline)
+            {
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        @onclick="@(() => { Server.IsOnline = false; })">
+                    Turn Off
+                </button>
+            }
+            else
+            {
+                <button type="button"
+                        class="btn btn-outline-success"
+                        @onclick="@(() => { Server.IsOnline = true; })">
+                    Turn On
+                </button>
+            }
+            &nbsp;
+            <a href="/servers/@Server.Id" class="btn btn-link">Edit</a>
+        </td>
+        <td>
+            <EditForm Model="Server"
+                      FormName="@($"form-Server-{Server.Id}")"
+                      OnValidSubmit="@(() => {DeleteServer(Server.Id);})">
+                <button type="submit" class="btn btn-primary">Delete</button>
+            </EditForm>
+        </td>
+    </tr>
 
-    <li @key="Server.Id" style="background-color: @GetBackgroundColor()">
+    @* <li @key="Server.Id" style="background-color: @GetBackgroundColor()">
         @Server.Name in @Server.City is
         <span style="color:@((Server.IsOnline ? "green" : "red"))">
             @(Server.IsOnline ? "online" : "offline")
@@ -35,7 +83,7 @@
                   OnValidSubmit="@(() => {DeleteServer(Server.Id);})">
             <button type="submit" class="btn btn-primary">Delete</button>
         </EditForm>
-    </li>
+    </li> *@
 }
 
 
