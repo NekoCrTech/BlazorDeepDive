@@ -1,8 +1,17 @@
-﻿<div class="col">
+﻿@using serverManagement2.StateStore
+@inject TorontoOnlineServersStore TorontoOnlineServersStore
+
+<div class="col">
     <div class="card @(SelectedCity.Equals(City, StringComparison.OrdinalIgnoreCase) ? "border-primary" : "")">
         <img src="@($"/images/{City}.png")" class="card-img-top" alt="...">
         <div class="card-body">
             <button type="button" class="btn btn-primary" @onclick="@(() => { SelectCity(City); })">@City</button>
+        </div>
+        <div>
+            @if (City.Equals("Toronto", StringComparison.OrdinalIgnoreCase))
+            {
+                <text>@noServersOnlineToronto</text>
+            }
         </div>
     </div>
 </div>
@@ -16,6 +25,24 @@
 
     [Parameter]
     public EventCallback<string> OnCitySelected { get; set; }
+
+    private int noServersOnlineToronto;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            noServersOnlineToronto = TorontoOnlineServersStore.GetNumberServersOnline();
+            TorontoOnlineServersStore.AddStateChangeListeners(OnServersStatusChange);
+            StateHasChanged();
+        }
+    }
+
+    private void OnServersStatusChange()
+    {
+        noServersOnlineToronto = TorontoOnlineServersStore.GetNumberServersOnline();
+        StateHasChanged();
+    }
 
     private void SelectCity(string cityName)
     {
