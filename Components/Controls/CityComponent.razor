@@ -1,6 +1,8 @@
 ﻿@using serverManagement2.StateStore
 @inject TorontoOnlineServersStore TorontoOnlineServersStore
 
+@implements IDisposable
+
 <div class="col">
     <div class="card @(SelectedCity.Equals(City, StringComparison.OrdinalIgnoreCase) ? "border-primary" : "")">
         <img src="@($"/images/{City}.png")" class="card-img-top" alt="...">
@@ -33,12 +35,12 @@
         if (firstRender)
         {
             noServersOnlineToronto = TorontoOnlineServersStore.GetNumberServersOnline();
-            TorontoOnlineServersStore.AddStateChangeListeners(OnServersStatusChange);
+            TorontoOnlineServersStore.AddStateChangeListeners(OnTorontoServersStatusChange);
             StateHasChanged();
         }
     }
 
-    private void OnServersStatusChange()
+    private void OnTorontoServersStatusChange()
     {
         noServersOnlineToronto = TorontoOnlineServersStore.GetNumberServersOnline();
         StateHasChanged();
@@ -47,5 +49,10 @@
     private void SelectCity(string cityName)
     {
         OnCitySelected.InvokeAsync(cityName);
+    }
+
+    public void Dispose()
+    {
+        TorontoOnlineServersStore.RemoveStateChangeListeners(OnTorontoServersStatusChange);
     }
 }
