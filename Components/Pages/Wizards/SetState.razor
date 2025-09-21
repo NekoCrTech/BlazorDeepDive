@@ -1,30 +1,36 @@
 ﻿@page "/serverstatus"
+@using serverManagement2.StateStore
 
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
+@inject SessionStorage sessionStorage
 
 <h3>Set State</h3>
 <br />
 <br />
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
 
-<FieldComponent Label="Server Status">
-    <Control>
-        <input type="checkbox" @bind-value="IsOnline" class="form-check-input"></input>
-    </Control>
-</FieldComponent>
+@if (server is not null)
+{
+    <FieldComponent Label="Server Status">
+        <Control>
+            <input type="checkbox" @bind-value="server.IsOnline" class="form-check-input"></input>
+        </Control>
+    </FieldComponent>
+}
+
 <br />
 <button type="button" class="btn btn-primary" @onclick="Save">Save</button>
 
 @code {
 
-    [SupplyParameterFromQuery]
-    public string? ServerName { get; set; }
-
-    [SupplyParameterFromQuery]
-    public string? CityName { get; set; }
-
-    private bool IsOnline { get; set; }
+    private Server? server;
 
     private string? errorMessage;
 
@@ -33,34 +39,24 @@
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            if (string.IsNullOrWhiteSpace(ServerName) || string.IsNullOrWhiteSpace(CityName))
-            {
-                this.errorMessage = "Server name or City name wasn't provided";
-                StateHasChanged();
-            }
+            this.server = await this.sessionStorage.GetServerAsync();
+            StateHasChanged();
         }
     }
 
-    private void Save()
+    private async Task Save()
     {
-        if (string.IsNullOrWhiteSpace(ServerName) || string.IsNullOrWhiteSpace(CityName))
+        if (server is not null)
         {
-            this.errorMessage = "Server name or City name cannot be empty.";
-            return;
+            await sessionStorage.SetServerAsync(null);
+            ServersRepository.AddServer(server);
+            NavigationManager.NavigateTo($"/Servers/back_from/{server.City}");
         }
-
-        var server = new Server
-        {
-            Name = ServerName,
-            City = CityName,
-            IsOnline = IsOnline
-        };
-        ServersRepository.AddServer(server);
-        NavigationManager.NavigateTo($"/Servers/back_from/{CityName}");
+        
     }
 
 }

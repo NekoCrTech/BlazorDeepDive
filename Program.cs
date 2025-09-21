@@ -1,9 +1,12 @@
 using serverManagement2.Components;
+using serverManagement2.StateStore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddTransient<SessionStorage>();
 
 var app = builder.Build();
 

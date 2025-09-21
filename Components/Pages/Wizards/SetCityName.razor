@@ -1,8 +1,10 @@
 ﻿@page "/cityname"
+@using serverManagement2.StateStore
 
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
+@inject SessionStorage sessionStorage
 
 <h3>Set City Name</h3>
 <br />
@@ -14,51 +16,51 @@
         @errorMessage
     </div>
 }
+@if (server is not null)
+{
+    <FieldComponent Label="City Name">
+        <Control>
+            <input type="text" @bind-value="server.City" class="form-control"></input>
+        </Control>
+    </FieldComponent>
+}
 
-<FieldComponent Label="City Name">
-    <Control>
-        <input type="text" @bind-value="cityName" class="form-control"></input>
-    </Control>
-</FieldComponent>
 <br />
 <button type="button" class="btn btn-primary" @onclick="GoNext">Next</button>
 
 @code {
-    [SupplyParameterFromQuery]
-    public string? ServerName { get; set; }
-
     private string? errorMessage;
 
-    private string? cityName;
+    private Server? server;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            if (string.IsNullOrWhiteSpace(ServerName))
-            {
-                this.errorMessage = "Server name is wasn't provided";
-                StateHasChanged();
-            }
+            this.server = await this.sessionStorage.GetServerAsync();
+            StateHasChanged();
         }
     }
 
-    private void GoNext()
+    private async Task GoNext()
     {
-        
-        if (string.IsNullOrWhiteSpace(ServerName) || string.IsNullOrWhiteSpace(cityName))
+        if (server is not null)
         {
-            this.errorMessage = "Server name or City name cannot be empty.";
-            return;
-        }
-        else
-        {
-            NavigationManager.NavigateTo($"/serverstatus?servername={ServerName}&cityname={cityName}");
-        }
+            if (string.IsNullOrWhiteSpace(server.City))
+            {
+                this.errorMessage = "City name cannot be empty.";
+                return;
+            }
+            else
+            {
+                await sessionStorage.SetServerAsync(server);
+                NavigationManager.NavigateTo($"/serverstatus");
+            }
+        }    
     }
 }

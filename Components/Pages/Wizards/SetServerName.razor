@@ -1,10 +1,10 @@
 ﻿@page "/servername"
+@using serverManagement2.StateStore
 
 @rendermode InteractiveServer
 
-
-
 @inject NavigationManager NavigationManager
+@inject SessionStorage sessionStorage
 
 <h3>Set Server Name</h3>
 <br />
@@ -17,35 +17,52 @@
     </div>
 }
 
-<FieldComponent Label="Name">
-    <Control>
-        <input type="text" @bind-value="serverName" class="form-control"></input>
-    </Control>
-</FieldComponent>
+@if (server is not null)
+{
+    <FieldComponent Label="Name">
+        <Control>
+            <input type="text" @bind-value="server.Name" class="form-control"></input>
+        </Control>
+    </FieldComponent>
+}
+
 <br />
 <button type="button" class="btn btn-primary" @onclick="GoNext">Next</button>
 
 @code {
     private string? errorMessage;
 
-    private string? serverName;
+    private Server? server;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
 
-    private void GoNext()
+    protected override void OnAfterRender(bool firstRender)
     {
-        if (string.IsNullOrWhiteSpace(serverName))
+        if (firstRender)
         {
-            this.errorMessage = "Server name cannot be empty.";
+            server = new Server();
+            StateHasChanged();
         }
-        else
-        {
-            NavigationManager.NavigateTo($"/cityname?servername={serverName}");
-        }
+        
     }
 
+    private async Task GoNext()
+    {
+        if(server is not null)
+        {
+            if (string.IsNullOrWhiteSpace(server.Name))
+            {
+                this.errorMessage = "Server name cannot be empty.";
+            }
+            else
+            {
+                await sessionStorage.SetServerAsync(server);
+                NavigationManager.NavigateTo("/cityname");
+            }
+        }
+    }
 }
 
