@@ -1,4 +1,5 @@
 ﻿@page "/Servers"
+@page "/Servers/back_from/{CityName}"
 
 @rendermode InteractiveServer
 
@@ -12,7 +13,8 @@
 
 <CityListComponent 
     @ref="cityListComponent"
-    OnCitySelected="HandleCitySelection">
+    OnCitySelected="HandleCitySelection"
+    SelectedCity="@this.selectedCity">
 </CityListComponent>
 
 <br />
@@ -42,11 +44,28 @@
 
 
 @code {
+    [Parameter]
+    public string? CityName { get; set; }
+
     private string selectedCity = "Toronto";
     private string searchFilter = "";
 
     private CityListComponent? cityListComponent;
     private SearchComponent? searchComponent;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (NavigationManager.Uri.Contains("back_from") 
+            && !string.IsNullOrWhiteSpace(CityName))
+            {
+                selectedCity = CityName;
+
+                StateHasChanged();
+            }
+        }
+    }
 
 
     private void HandleCitySelection(string cityName)
