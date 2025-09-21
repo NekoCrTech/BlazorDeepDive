@@ -25,12 +25,13 @@
 
 
 @*------------ Server List -------------*@
-
-<ServerListComponent 
-    @rendermode="InteractiveServer" 
-    CityName="@this.selectedCity"
-    SearchFilter="@this.searchFilter">
-</ServerListComponent>
+<CascadingValue Name="SelectedCity" Value="this.selectedCity">
+    <ServerListComponent 
+        @rendermode="InteractiveServer" 
+        CityName="@this.selectedCity"
+        SearchFilter="@this.searchFilter">
+    </ServerListComponent>
+</CascadingValue>
 
 
 
