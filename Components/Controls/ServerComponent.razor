@@ -50,40 +50,6 @@
             </EditForm>
         </td>
     </tr>
-
-    @* <li @key="Server.Id" style="background-color: @GetBackgroundColor()">
-        @Server.Name in @Server.City is
-        <span style="color:@((Server.IsOnline ? "green" : "red"))">
-            @(Server.IsOnline ? "online" : "offline")
-        </span>
-        &nbsp;
-        @if (Server.IsOnline)
-        {
-            @RndInt(300) <text> / 300 </text>
-            <button type="button"
-                class="btn btn-outline-danger"
-                @onclick="@(() => {Server.IsOnline = false; })">
-                Turn Off
-            </button>
-        }
-        else
-        {
-            <text>N / A </text>
-            <button type="button" 
-                class="btn btn-outline-success"
-                @onclick="@(() =>  {Server.IsOnline = true; })">
-                Turn On
-            </button>
-        }
-        &nbsp;
-        <a href="/servers/@Server.Id" class="btn btn-link">Edit</a>
-        &nbsp;
-        <EditForm Model="Server"
-                  FormName="@($"form-Server-{Server.Id}")"
-                  OnValidSubmit="@(() => {DeleteServer(Server.Id);})">
-            <button type="submit" class="btn btn-primary">Delete</button>
-        </EditForm>
-    </li> *@
 }
 
 
